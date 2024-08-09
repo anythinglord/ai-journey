@@ -1,1 +1,3 @@
-# repo
+# AI Journey
+
+## CNN-VAE Implementation
