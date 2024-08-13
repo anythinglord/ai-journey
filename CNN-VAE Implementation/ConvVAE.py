@@ -35,9 +35,17 @@ class ConvVAE(object):
             h = tf.layers.conv2d(h, 256, 4, strides = 2, activation = tf.nn.relu, name='enc_conv4')
             h = tf.reshape(h, shape=[-1, 2 * 2 * 256]) # column vector, flattened vector
 
-    # create the variational stage 
-    self.mu = tf.layers.dense(h, self.z_size, name = 'enc_fc_mu') # h  flattened vector, self.z_size number of networks
-    self.logvar = tf.layers.dense(h, self.z_size, name = 'enc_fc_logavar') # variance`s logarithm
-    self.sigma = tf.exp(self.logvar/2.0)
-    self.epsilon = tf.random_normal([self.batch_size, self.z_size]) # N(0,1) distribution
-    self.z = self.mu + self.sigma * self.epsilon
+            # build the variational stage 
+            self.mu = tf.layers.dense(h, self.z_size, name = 'enc_fc_mu') # h  flattened vector, self.z_size number of networks
+            self.logvar = tf.layers.dense(h, self.z_size, name = 'enc_fc_logavar') # variance`s logarithm
+            self.sigma = tf.exp(self.logvar/2.0)
+            self.epsilon = tf.random_normal([self.batch_size, self.z_size]) # N(0,1) distribution
+            self.z = self.mu + self.sigma * self.epsilon
+
+            # build decoder (reverse convolution)
+            h = tf.layers.dense(self.z, 1024, name = 'dec_fc')
+            h = tf.reshape(h, shape=[-1, 1 * 1 * 1024]) # -1 to get a column vector
+            h = tf.layers.conv2d_transpose(h, 128, 5, strides = 2, activation = tf.nn.relu, name='dec_deconv1')
+            h = tf.layers.conv2d_transpose(h, 64, 5, strides = 2, activation = tf.nn.relu, name='dec_deconv2')
+            h = tf.layers.conv2d_transpose(h, 32, 6, strides = 2, activation = tf.nn.relu, name='dec_deconv3')
+            self.y = tf.layers.conv2d_transpose(h, 3, 6, strides = 2, activation = tf.nn.sigmoid, name='dec_deconv4') # final prediction 
