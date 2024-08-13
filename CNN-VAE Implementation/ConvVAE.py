@@ -34,3 +34,10 @@ class ConvVAE(object):
             h = tf.layers.conv2d(h, 128, 4, strides = 2, activation = tf.nn.relu, name='encoder_conv3')
             h = tf.layers.conv2d(h, 256, 4, strides = 2, activation = tf.nn.relu, name='encoder_conv4')
             h = tf.reshape(h, shape=[-1, 2 * 2 * 256]) # column vector, flattened vector
+
+    # create the variational stage 
+    self.mu = tf.layers.dense(h, self.z_size, name = 'enc_fc_mu') # h  flattened vector, self.z_size number of networks
+    self.logvar = tf.layers.dense(h, self.z_size, name = 'enc_fc_logavar') # variance`s logarithm
+    self.sigma = tf.exp(self.logvar/2.0)
+    self.epsilon = tf.random_normal([self.batch_size, self.z_size]) # N(0,1) distribution
+    self.z = self.mu + self.sigma * self.epsilon
