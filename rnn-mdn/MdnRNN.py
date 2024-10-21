@@ -25,3 +25,11 @@ class MdnRNN(object):
 
     # create method for the MDN-RNN model architecture
     def build_model(self, hps):
+        # Build RNN
+        self.num_mixture = hps.num_mixture # Number of Dentisy mixtures 
+        KMIX = self.num_mixture
+        INWIDTH =  hps.input_seq_width # input width 
+        OUTWIDTH = hps.output_seq_width # output width 
+        LENGTH = hps.max_seq_width # max step`s num
+        if hps.is_trainning:
+            self.global_step = tf.Variable(0, name = 'global_step', trainable = False)
