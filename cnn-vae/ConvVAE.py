@@ -6,7 +6,7 @@ class ConvVAE(object):
 
     # parameters and variables initialization
     def __init__(self, z_size =32, batch_size = 1, learning_rate = 0.0001,
-               kl_tolerance = 0.5, is_training = False, reuse = False, gpu_model = False):
+               kl_tolerance = 0.5, is_training = False, reuse = False, gpu_mode = False):
         self.z_size = z_size
         self.batch_size = batch_size
         self.learning_rate = learning_rate
